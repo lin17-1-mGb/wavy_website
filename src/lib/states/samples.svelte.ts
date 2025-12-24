@@ -123,6 +123,17 @@ export const uplaodDeviceDefaultSamples = async () => {
 export const initialiseDeviceSamples = async () => {
   log.debug('Initialising device samples...');
   const support = await checkDeviceSampleSupport();
+  // 1. Add this check to handle the "undefined" case
+  if (!support) {
+    log.debug('Support check aborted (transfer busy).');
+    return;
+  }
+
+  // Now it is safe to check .supported
+  if (!support.supported) { 
+    log.debug('Device does not support samples, aborting initialisation.'); 
+    return; 
+  }
   if (!support.supported) { log.debug('Device does not support samples, aborting initialisation.'); return; }
   if (support.isSet !== true) {
     log.debug('Uploading default samples to device...');
